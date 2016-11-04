@@ -30,8 +30,43 @@ public class UserResource {
 	AuthenticationHelper authHelper = AuthenticationHelper.getAuthenticationHelper();
 
 	@GET
-	public Representation returnUser() throws AccessDeniedException {
+	public Representation returnUser(@QueryParam("username") String username) throws AccessDeniedException {
 		String content = "";
+
+		String loginUser = "";
+		try {
+			connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
+			Statement statement = connection.createStatement();
+			statement.setQueryTimeout(30);
+			
+			ResultSet rs = statement.executeQuery("select username from login");
+			
+			while(rs.next()){
+				loginUser = rs.getString("username");
+			}
+			
+			if(loginUser == null || loginUser.equals("")) throw new AccessDeniedException("Access denied");
+			
+			String returnStatement = "select username,fullname,emailaddress from user where username='"+username+"'";
+			
+			rs = statement.executeQuery(returnStatement);
+			
+			while(rs.next()){
+				user = rs.getString("username");
+				fullName = rs.getString("fullname");
+				emailAddress = rs.getString("emailAddress");
+			}
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+		} finally {
+			try {
+				if (connection != null)
+					connection.close();
+			} catch (SQLException e) {
+				// connection close failed.
+				System.err.println(e);
+			}
+		}
 
 		if (user == null)
 			throw new AccessDeniedException("Access denied");

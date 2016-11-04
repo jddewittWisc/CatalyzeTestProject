@@ -15,7 +15,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 
-import com.dewitt.CatalyzeTestUser;
 import com.dewitt.configuration.AuthenticationHelper;
 import com.dewitt.configuration.Representation;
 
